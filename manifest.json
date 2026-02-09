@@ -2,7 +2,7 @@
   "name": "Vocabulary Weaver",
   "short_name": "VocabTool",
   "description": "个性化语境单词记忆工具",
-  "start_url": "./vocabulary_weaver.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#f8f9fa",
   "theme_color": "#667eea",
