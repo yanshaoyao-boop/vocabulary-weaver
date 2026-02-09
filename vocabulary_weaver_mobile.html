@@ -11,9 +11,6 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
         rel="stylesheet">
-    <!-- Ionicons for icons -->
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <style>
         /* Global Reset & Typography */
         :root {
@@ -244,26 +241,34 @@
             gap: 0.75rem;
         }
 
-        .speed-control {
+        .control-group {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .speed-control label {
+        .control-group label {
             font-size: 0.9rem;
             color: var(--text-light);
             font-weight: 500;
         }
 
-        .speed-select {
+        .speed-select,
+        .voice-select {
             padding: 0.4rem 0.8rem;
             border-radius: 8px;
             border: 1px solid #e2e8f0;
             background: white;
             font-size: 0.85rem;
             cursor: pointer;
+        }
+
+        .speed-select {
             min-width: 100px;
+        }
+
+        .voice-select {
+            max-width: 150px;
         }
 
         .playback-btns {
@@ -417,28 +422,6 @@
         .highlight-word:hover {
             background: rgba(102, 126, 234, 0.1);
             border-radius: 4px;
-        }
-
-        /* Tooltip custom implementation */
-        .tooltip-box {
-            position: absolute;
-            background: #2d3748;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            bottom: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            z-index: 10;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .highlight-word:hover .tooltip-box {
-            opacity: 1;
         }
 
         /* Vocab List */
@@ -735,7 +718,14 @@
             color: #e53e3e;
         }
     </style>
+    <!-- Ionicons for icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="theme-color" content="#667eea">
 
 <body>
     <div class="container">
@@ -747,8 +737,7 @@
         <section class="input-section">
             <div class="input-group">
                 <label for="wordsInput">输入需要记忆的单词 (用逗号分隔):</label>
-                <textarea id="wordsInput"
-                    placeholder="例如: serendipity, ephemeral, labyrinth...">serendipity, ephemeral, labyrinth</textarea>
+                <textarea id="wordsInput" placeholder="例如: serendipity, ephemeral, labyrinth..."></textarea>
             </div>
 
             <div class="controls">
@@ -817,7 +806,13 @@
                 </div>
                 <!-- Audio Controls -->
                 <div class="audio-controls">
-                    <div class="speed-control">
+                    <div class="control-group">
+                        <label>语音:</label>
+                        <select id="simpleVoiceSelect" class="voice-select">
+                            <option value="">默认语音</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
                         <label>速度:</label>
                         <select id="simpleSpeedSelect" class="speed-select">
                             <option value="0.5">0.5x 慢速</option>
@@ -862,7 +857,13 @@
                 </div>
                 <!-- Audio Controls -->
                 <div class="audio-controls">
-                    <div class="speed-control">
+                    <div class="control-group">
+                        <label>语音:</label>
+                        <select id="complexVoiceSelect" class="voice-select">
+                            <option value="">默认语音</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
                         <label>速度:</label>
                         <select id="complexSpeedSelect" class="speed-select">
                             <option value="0.5">0.5x 慢速</option>
@@ -900,6 +901,7 @@
     </div>
 
     <script>
+
         // State
         let generatedData = null;
 
@@ -1086,12 +1088,9 @@
                 // Identify words to highlight (case insensitive)
                 inputWords.forEach(word => {
                     if (word.length < 2) return;
-                    // Find specific word data for tooltip
-                    const vocabItem = data.vocabulary_data.find(v => v.word.toLowerCase() === word.toLowerCase());
-                    const tooltipText = vocabItem ? `${vocabItem.definition_cn}` : "New Word";
-
+                    // No tooltip, just highlight and click-to-speak
                     const regex = new RegExp(`\\b(${word})\\b`, 'gi');
-                    processedText = processedText.replace(regex, `<span class="highlight-word" onclick="speakWord('$1')">$1<span class="tooltip-box">${tooltipText}</span></span>`);
+                    processedText = processedText.replace(regex, `<span class="highlight-word" onclick="speakWord('$1')">$1</span>`);
                 });
                 return processedText;
             };
@@ -1151,6 +1150,40 @@
         let currentUtterance = null;
         let isPaused = false;
         let currentType = null;
+        let voices = [];
+
+        function populateVoices() {
+            voices = window.speechSynthesis.getVoices();
+            const voiceSelects = [
+                document.getElementById('simpleVoiceSelect'),
+                document.getElementById('complexVoiceSelect')
+            ];
+
+            voiceSelects.forEach(select => {
+                if (!select) return;
+                // Keep the default option
+                const defaultOption = select.options[0];
+                select.innerHTML = '';
+                select.appendChild(defaultOption);
+
+                voices.forEach((voice, index) => {
+                    // Filter for English voices primarily, or all if preferred
+                    if (voice.lang.includes('en')) {
+                        const option = document.createElement('option');
+                        option.textContent = `${voice.name} (${voice.lang})`;
+                        option.value = index;
+                        select.appendChild(option);
+                    }
+                });
+            });
+        }
+
+        // Wait for voices to be loaded
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = populateVoices;
+        }
+        // Also try immediately
+        populateVoices();
 
         // Toggle Translation Collapse
         function toggleTranslation(type) {
@@ -1172,6 +1205,11 @@
             const playBtn = document.getElementById(`${type}PlayBtn`);
             const speedSelect = document.getElementById(`${type}SpeedSelect`);
             const speed = parseFloat(speedSelect.value);
+
+            // Voice selection
+            const voiceSelect = document.getElementById(`${type}VoiceSelect`);
+            const selectedVoiceIndex = voiceSelect.value;
+
 
             // If already speaking this type, toggle pause/resume
             if (synth.speaking && currentType === type) {
@@ -1198,6 +1236,11 @@
             currentUtterance = new SpeechSynthesisUtterance(text);
             currentUtterance.lang = 'en-US';
             currentUtterance.rate = speed;
+
+            // Apply selected voice if any
+            if (selectedVoiceIndex !== "") {
+                currentUtterance.voice = voices[selectedVoiceIndex];
+            }
 
             currentUtterance.onstart = () => {
                 playBtn.innerHTML = '<ion-icon name="pause-outline" size="large"></ion-icon> 暂停';
@@ -1346,7 +1389,6 @@
             resultBox.style.display = 'block';
             submitBtn.disabled = true;
         }
-
     </script>
 </body>
 
