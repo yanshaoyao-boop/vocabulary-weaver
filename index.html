@@ -32,7 +32,7 @@
             <div class="input-group">
                 <label for="wordsInput">输入需要记忆的单词 (用逗号分隔):</label>
                 <textarea id="wordsInput"
-                    placeholder="例如: serendipity, ephemeral, labyrinth...">serendipity, ephemeral, labyrinth</textarea>
+                    placeholder="例如: serendipity, ephemeral, labyrinth..."></textarea>
             </div>
 
             <div class="controls">
@@ -101,7 +101,13 @@
                 </div>
                 <!-- Audio Controls -->
                 <div class="audio-controls">
-                    <div class="speed-control">
+                    <div class="control-group">
+                        <label>语音:</label>
+                        <select id="simpleVoiceSelect" class="voice-select">
+                            <option value="">默认语音</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
                         <label>速度:</label>
                         <select id="simpleSpeedSelect" class="speed-select">
                             <option value="0.5">0.5x 慢速</option>
@@ -146,7 +152,13 @@
                 </div>
                 <!-- Audio Controls -->
                 <div class="audio-controls">
-                    <div class="speed-control">
+                    <div class="control-group">
+                        <label>语音:</label>
+                        <select id="complexVoiceSelect" class="voice-select">
+                            <option value="">默认语音</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
                         <label>速度:</label>
                         <select id="complexSpeedSelect" class="speed-select">
                             <option value="0.5">0.5x 慢速</option>

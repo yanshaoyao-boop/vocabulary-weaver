@@ -185,12 +185,9 @@ function renderResults(data, inputWords) {
         // Identify words to highlight (case insensitive)
         inputWords.forEach(word => {
             if (word.length < 2) return;
-            // Find specific word data for tooltip
-            const vocabItem = data.vocabulary_data.find(v => v.word.toLowerCase() === word.toLowerCase());
-            const tooltipText = vocabItem ? `${vocabItem.definition_cn}` : "New Word";
-
+            // No tooltip, just highlight and click-to-speak
             const regex = new RegExp(`\\b(${word})\\b`, 'gi');
-            processedText = processedText.replace(regex, `<span class="highlight-word" onclick="speakWord('$1')">$1<span class="tooltip-box">${tooltipText}</span></span>`);
+            processedText = processedText.replace(regex, `<span class="highlight-word" onclick="speakWord('$1')">$1</span>`);
         });
         return processedText;
     };
@@ -250,6 +247,40 @@ function renderResults(data, inputWords) {
 let currentUtterance = null;
 let isPaused = false;
 let currentType = null;
+let voices = [];
+
+function populateVoices() {
+    voices = window.speechSynthesis.getVoices();
+    const voiceSelects = [
+        document.getElementById('simpleVoiceSelect'),
+        document.getElementById('complexVoiceSelect')
+    ];
+
+    voiceSelects.forEach(select => {
+        if (!select) return;
+        // Keep the default option
+        const defaultOption = select.options[0];
+        select.innerHTML = '';
+        select.appendChild(defaultOption);
+
+        voices.forEach((voice, index) => {
+            // Filter for English voices primarily, or all if preferred
+            if (voice.lang.includes('en')) {
+                const option = document.createElement('option');
+                option.textContent = `${voice.name} (${voice.lang})`;
+                option.value = index;
+                select.appendChild(option);
+            }
+        });
+    });
+}
+
+// Wait for voices to be loaded
+if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = populateVoices;
+}
+// Also try immediately
+populateVoices();
 
 // Toggle Translation Collapse
 function toggleTranslation(type) {
@@ -271,6 +302,11 @@ function togglePlayback(type) {
     const playBtn = document.getElementById(`${type}PlayBtn`);
     const speedSelect = document.getElementById(`${type}SpeedSelect`);
     const speed = parseFloat(speedSelect.value);
+
+    // Voice selection
+    const voiceSelect = document.getElementById(`${type}VoiceSelect`);
+    const selectedVoiceIndex = voiceSelect.value;
+
 
     // If already speaking this type, toggle pause/resume
     if (synth.speaking && currentType === type) {
@@ -297,6 +333,11 @@ function togglePlayback(type) {
     currentUtterance = new SpeechSynthesisUtterance(text);
     currentUtterance.lang = 'en-US';
     currentUtterance.rate = speed;
+
+    // Apply selected voice if any
+    if (selectedVoiceIndex !== "") {
+        currentUtterance.voice = voices[selectedVoiceIndex];
+    }
 
     currentUtterance.onstart = () => {
         playBtn.innerHTML = '<ion-icon name="pause-outline" size="large"></ion-icon> 暂停';
