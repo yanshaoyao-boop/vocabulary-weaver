@@ -577,22 +577,24 @@ textarea {
     }
 }
 
-/* ============== Quiz Section Styles ============== */
+/* ============== Quiz Section Styles - Harry Potter Theme ============== */
 .quiz-section {
     margin-top: 2rem;
-    background: linear-gradient(135deg, #e8f4fd 0%, #f0e6ff 100%);
-    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(245, 230, 211, 0.95) 0%, rgba(235, 220, 195, 0.95) 100%);
+    border-radius: 12px;
     padding: 1.5rem;
-    border: 1px solid rgba(102, 126, 234, 0.2);
+    border: 2px solid rgba(139, 90, 43, 0.3);
     animation: fadeIn 0.4s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .quiz-header {
     font-size: 1.3rem;
     font-weight: 700;
-    color: var(--accent-color);
+    color: #740001;
     margin-bottom: 1.5rem;
     text-align: center;
+    font-family: 'Cinzel', serif;
 }
 
 .quiz-list {
@@ -602,30 +604,31 @@ textarea {
 }
 
 .quiz-question {
-    background: white;
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
     padding: 1.25rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(139, 90, 43, 0.2);
 }
 
 .question-number {
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--accent-color);
+    color: #740001;
     margin-bottom: 0.5rem;
 }
 
 .question-text {
     font-size: 1.05rem;
     font-weight: 600;
-    color: var(--text-main);
+    color: #2d1810;
     margin-bottom: 0.25rem;
     line-height: 1.5;
 }
 
 .question-text-cn {
     font-size: 0.9rem;
-    color: var(--text-light);
+    color: #5a4a3a;
     margin-bottom: 1rem;
 }
 
@@ -640,16 +643,16 @@ textarea {
     align-items: center;
     gap: 0.75rem;
     padding: 0.8rem 1rem;
-    border: 2px solid #e2e8f0;
+    border: 2px solid rgba(139, 90, 43, 0.3);
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
-    background: #fafbfc;
+    background: rgba(255, 255, 255, 0.8);
 }
 
 .quiz-option:hover {
-    border-color: var(--accent-color);
-    background: rgba(102, 126, 234, 0.05);
+    border-color: #eeba30;
+    background: rgba(238, 186, 48, 0.1);
 }
 
 .quiz-option input[type="radio"] {
@@ -660,8 +663,8 @@ textarea {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: var(--accent-color);
-    color: white;
+    background: #eeba30;
+    color: #2d1810;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -672,7 +675,8 @@ textarea {
 
 .option-text {
     flex: 1;
-    color: var(--text-main);
+    color: #2d1810;
+    font-weight: 500;
 }
 
 /* Selected state */
