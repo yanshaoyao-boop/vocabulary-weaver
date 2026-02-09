@@ -112,7 +112,6 @@ async function generateStory() {
     2. 'simple_text_cn': The Chinese translation of 'simple_text'. Should be natural and fluent Chinese.
     3. 'simple_quiz': An array of exactly 3 multiple-choice questions about the simple_text story. Each question object must have:
        - 'question': The question in English (suitable for ${difficulty} level).
-       - 'question_cn': Chinese translation of the question.
        - 'options': An array of exactly 4 options (A, B, C, D).
        - 'correct_answer': The correct option letter (A, B, C, or D).
     4. 'complex_text': A slightly more formal text (news snippet, diary entry, or informational paragraph) using the words. Still respects the ${difficulty} level but feels more "real-world".
@@ -420,7 +419,6 @@ function renderQuiz(type, quizData) {
         questionDiv.innerHTML = `
             <div class="question-number">第 ${index + 1} 题</div>
             <div class="question-text">${q.question}</div>
-            <div class="question-text-cn">${q.question_cn || ''}</div>
             <div class="options-list">${optionsHtml}</div>
         `;
         quizList.appendChild(questionDiv);
