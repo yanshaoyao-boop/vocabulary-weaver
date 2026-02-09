@@ -1,11 +1,11 @@
 {
-  "name": "Vocabulary Weaver",
-  "short_name": "VocabTool",
-  "description": "个性化语境单词记忆工具",
+  "name": "严方谊专属英语助手",
+  "short_name": "方谊英语",
+  "description": "Welcome to Hogwarts of English Learning | 欢迎来到英语魔法学院",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f8f9fa",
-  "theme_color": "#667eea",
+  "background_color": "#0d0d1a",
+  "theme_color": "#740001",
   "icons": [
     {
       "src": "icon.svg",
