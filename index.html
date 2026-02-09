@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contextual Vocabulary Weaver | 语境词汇编织者</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Ionicons for icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="theme-color" content="#667eea">
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Vocabulary Weaver</h1>
+            <p class="subtitle">Personalized Contextual Learning Assistant | 个性化语境学习助手</p>
+        </header>
+
+        <section class="input-section">
+            <div class="input-group">
+                <label for="wordsInput">输入需要记忆的单词 (用逗号分隔):</label>
+                <textarea id="wordsInput"
+                    placeholder="例如: serendipity, ephemeral, labyrinth...">serendipity, ephemeral, labyrinth</textarea>
+            </div>
+
+            <div class="controls">
+                <div class="input-group">
+                    <label for="themeSelect">选择故事主题:</label>
+                    <select id="themeSelect">
+                        <option value="magic">🧙‍♂️ 哈利波特与魔法世界 (Harry Potter / Magic)</option>
+                        <option value="detective">🕵️‍♀️ 悬疑侦探故事 (Detective / Mystery)</option>
+                        <option value="scifi">🚀 科幻与未来 (Sci-Fi / Future)</option>
+                        <option value="daily">🏫 校园日常生活 (Daily Life / School)</option>
+                        <option value="adventure">🗺️ 丛林探险 (Jungle Adventure)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="difficultySelect">选择难度等级 (CEFR):</label>
+                    <select id="difficultySelect">
+                        <option value="A1">🌱 A1 - 入门级 (Beginner)</option>
+                        <option value="A2">🌿 A2 - 基础级 (Elementary)</option>
+                        <option value="B1" selected>🌳 B1 - 中级 (Intermediate)</option>
+                        <option value="B2">🌲 B2 - 中高级 (Upper-Intermediate)</option>
+                        <option value="C1">🏔️ C1 - 高级 (Advanced)</option>
+                    </select>
+                </div>
+            </div>
+
+
+
+            <div class="settings-toggle" onclick="toggleSettings()">⚙️ API 设置 (Advanced)</div>
+            <div class="api-settings" id="apiSettings">
+                <div class="input-group">
+                    <label for="apiKey">API Key (OpenAI Compatible):</label>
+                    <input type="password" id="apiKey" value="d0fc4fd9-9181-4a18-808e-7a4000b187fb">
+                </div>
+                <div class="input-group" style="margin-top: 10px;">
+                    <label for="modelId">Model ID:</label>
+                    <input type="text" id="modelId" value="doubao-seed-1-6-flash-250828">
+                </div>
+            </div>
+
+            <button id="generateBtn" class="btn-generate" onclick="generateStory()">
+                ✨ 生成语境故事 (Weave Context)
+            </button>
+        </section>
+
+        <section class="results-section" id="resultsSection">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('simple')">📖 趣味故事 (Simple Story)</button>
+                <button class="tab-btn" onclick="switchTab('complex')">📰 真实语境 (Complex Usage)</button>
+                <button class="tab-btn" onclick="switchTab('analysis')">🧩 词汇解析 (Analysis)</button>
+            </div>
+
+            <!-- Simple Story Content -->
+            <div id="simpleTab" class="tab-content active">
+                <div class="story-card">
+                    <div id="simpleTextOutput" class="story-text">
+                        <!-- Content will be injected here -->
+                    </div>
+                </div>
+                <!-- Collapsible Translation -->
+                <div id="simpleTranslationBox" class="translation-box collapsible">
+                    <div class="translation-header" onclick="toggleTranslation('simple')">
+                        <span>📝 中文翻译</span>
+                        <ion-icon id="simpleTransIcon" name="chevron-down-outline"></ion-icon>
+                    </div>
+                    <div id="simpleTranslation" class="translation-text collapsed"></div>
+                </div>
+                <!-- Audio Controls -->
+                <div class="audio-controls">
+                    <div class="speed-control">
+                        <label>速度:</label>
+                        <select id="simpleSpeedSelect" class="speed-select">
+                            <option value="0.5">0.5x 慢速</option>
+                            <option value="0.75">0.75x</option>
+                            <option value="1" selected>1x 正常</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x 快速</option>
+                        </select>
+                    </div>
+                    <div class="playback-btns">
+                        <button class="speak-btn" id="simplePlayBtn" onclick="togglePlayback('simple')">
+                            <ion-icon name="play-outline" size="large"></ion-icon> 朗读
+                        </button>
+                        <button class="speak-btn" onclick="stopPlayback()">
+                            <ion-icon name="stop-outline" size="large"></ion-icon> 停止
+                        </button>
+                    </div>
+                </div>
+                <!-- Quiz Section for Simple Story -->
+                <div id="simpleQuizSection" class="quiz-section" style="display: none;">
+                    <div class="quiz-header">📚 阅读理解测试</div>
+                    <div id="simpleQuizList" class="quiz-list"></div>
+                    <button id="simpleSubmitQuiz" class="btn-submit-quiz" onclick="submitQuiz('simple')">提交答案</button>
+                    <div id="simpleQuizResult" class="quiz-result" style="display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Complex Text Content -->
+            <div id="complexTab" class="tab-content">
+                <div class="story-card" style="border-left: 5px solid #2c5282;">
+                    <div id="complexTextOutput" class="story-text">
+                        <!-- Content will be injected here -->
+                    </div>
+                </div>
+                <!-- Collapsible Translation -->
+                <div id="complexTranslationBox" class="translation-box collapsible">
+                    <div class="translation-header" onclick="toggleTranslation('complex')">
+                        <span>📝 中文翻译</span>
+                        <ion-icon id="complexTransIcon" name="chevron-down-outline"></ion-icon>
+                    </div>
+                    <div id="complexTranslation" class="translation-text collapsed"></div>
+                </div>
+                <!-- Audio Controls -->
+                <div class="audio-controls">
+                    <div class="speed-control">
+                        <label>速度:</label>
+                        <select id="complexSpeedSelect" class="speed-select">
+                            <option value="0.5">0.5x 慢速</option>
+                            <option value="0.75">0.75x</option>
+                            <option value="1" selected>1x 正常</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x 快速</option>
+                        </select>
+                    </div>
+                    <div class="playback-btns">
+                        <button class="speak-btn" id="complexPlayBtn" onclick="togglePlayback('complex')">
+                            <ion-icon name="play-outline" size="large"></ion-icon> 朗读
+                        </button>
+                        <button class="speak-btn" onclick="stopPlayback()">
+                            <ion-icon name="stop-outline" size="large"></ion-icon> 停止
+                        </button>
+                    </div>
+                </div>
+                <!-- Quiz Section for Complex Text -->
+                <div id="complexQuizSection" class="quiz-section" style="display: none;">
+                    <div class="quiz-header">📚 阅读理解测试</div>
+                    <div id="complexQuizList" class="quiz-list"></div>
+                    <button id="complexSubmitQuiz" class="btn-submit-quiz" onclick="submitQuiz('complex')">提交答案</button>
+                    <div id="complexQuizResult" class="quiz-result" style="display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Vocabulary Analysis Content -->
+            <div id="analysisTab" class="tab-content">
+                <div id="vocabList" class="vocab-list">
+                    <!-- Vocab cards generated here -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
