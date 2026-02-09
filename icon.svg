@@ -1,70 +1,84 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="hatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#8B4513"/>
-      <stop offset="50%" stop-color="#654321"/>
-      <stop offset="100%" stop-color="#3d2817"/>
-    </linearGradient>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#740001"/>
-      <stop offset="100%" stop-color="#4a0001"/>
-    </linearGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+    <!-- Leather Texture Gradient -->
+    <radialGradient id="leatherGrad" cx="30%" cy="30%" r="90%">
+      <stop offset="0%" stop-color="#8B5A2B"/>
+      <stop offset="40%" stop-color="#654321"/>
+      <stop offset="80%" stop-color="#3E2723"/>
+      <stop offset="100%" stop-color="#1A0F0A"/>
+    </radialGradient>
+    
+    <!-- Deep Shadow for Folds -->
+    <filter id="insetShadow">
+      <feOffset dx="0" dy="2"/>
+      <feGaussianBlur stdDeviation="2" result="offset-blur"/>
+      <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
+      <feFlood flood-color="black" flood-opacity="0.8" result="color"/>
+      <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
+      <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
+    </filter>
+
+    <!-- Magical Glow -->
+    <filter id="goldenGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-  
-  <!-- Background circle -->
-  <circle cx="256" cy="256" r="250" fill="url(#bgGrad)" stroke="#eeba30" stroke-width="8"/>
-  
-  <!-- Sorting Hat body -->
-  <path d="M 140 380 
-           C 120 380, 100 360, 110 340
-           L 130 320
-           C 140 310, 160 305, 180 310
-           L 200 280
-           C 210 260, 230 250, 250 260
-           L 270 200
-           C 280 160, 300 120, 340 100
-           C 360 90, 380 95, 385 110
-           C 390 130, 370 160, 350 200
-           L 330 250
-           C 340 260, 360 270, 370 290
-           L 390 320
-           C 400 335, 395 360, 370 380
-           Z" 
-        fill="url(#hatGrad)" 
-        stroke="#3d2817" 
-        stroke-width="3"/>
-  
-  <!-- Hat brim -->
-  <ellipse cx="255" cy="385" rx="130" ry="30" fill="#654321" stroke="#3d2817" stroke-width="2"/>
-  <ellipse cx="255" cy="380" rx="125" ry="25" fill="#8B4513"/>
-  
-  <!-- Hat fold lines -->
-  <path d="M 180 330 Q 220 340, 260 325" stroke="#3d2817" stroke-width="2" fill="none"/>
-  <path d="M 200 300 Q 250 310, 300 290" stroke="#3d2817" stroke-width="2" fill="none"/>
-  <path d="M 250 250 Q 280 260, 320 240" stroke="#3d2817" stroke-width="2" fill="none"/>
-  
-  <!-- Magical sparkles -->
-  <g fill="#eeba30" filter="url(#glow)">
-    <circle cx="120" cy="150" r="4"/>
-    <circle cx="400" cy="180" r="5"/>
-    <circle cx="100" cy="280" r="3"/>
-    <circle cx="420" cy="300" r="4"/>
-    <circle cx="150" cy="420" r="3"/>
-    <circle cx="380" cy="430" r="4"/>
-    <circle cx="450" cy="230" r="3"/>
-    <circle cx="80" cy="350" r="4"/>
+
+  <!-- Background Circle (Gryffindor Red) -->
+  <circle cx="256" cy="256" r="240" fill="#740001" stroke="#eeba30" stroke-width="6"/>
+  <circle cx="256" cy="256" r="230" fill="none" stroke="#ae0001" stroke-width="4" stroke-opacity="0.5"/>
+
+  <!-- Sorting Hat Silhouette Group -->
+  <g transform="translate(0, 20)">
+    
+    <!-- Brim (Shadow) -->
+    <ellipse cx="256" cy="385" rx="160" ry="45" fill="#2d1810" opacity="0.6"/>
+    
+    <!-- Main Hat Body -->
+    <path d="M 120 380 
+             C 100 380, 80 370, 90 350
+             L 120 320
+             C 140 300, 160 305, 180 310
+             L 210 260
+             C 200 220, 190 180, 240 140
+             C 260 120, 280 100, 360 80
+             C 390 70, 420 80, 410 110
+             C 400 140, 360 170, 340 210
+             L 330 250
+             C 350 260, 380 270, 390 300
+             L 410 330
+             C 430 350, 420 380, 390 390
+             Z" 
+          fill="url(#leatherGrad)"/>
+
+    <!-- The "Face" Folds (Eyes and Mouth) -->
+    <path d="M 190 280 Q 230 300, 280 270" fill="none" stroke="#2d1810" stroke-width="8" stroke-linecap="round" filter="url(#insetShadow)"/>
+    <path d="M 280 270 Q 330 250, 360 280" fill="none" stroke="#2d1810" stroke-width="8" stroke-linecap="round" filter="url(#insetShadow)"/>
+    
+    <!-- Mouth Fold -->
+    <path d="M 160 340 Q 260 380, 380 330" fill="none" stroke="#1A0F0A" stroke-width="12" stroke-linecap="round" filter="url(#insetShadow)"/>
+    
+    <!-- Patches -->
+    <path d="M 200 200 L 230 190 L 240 220 L 210 230 Z" fill="#5D4037" stroke="#3E2723" stroke-width="2"/>
+    <path d="M 205 200 L 208 205 M 225 195 L 228 200 M 235 220 L 232 215" stroke="#8B5A2B" stroke-width="1"/>
+
+    <!-- Hat Brim (Front) -->
+    <path d="M 90 370 Q 256 430, 420 370 C 430 380, 420 400, 256 420 Q 100 400, 90 370" fill="#5D4037"/>
+
   </g>
-  
-  <!-- Small stars -->
-  <g fill="#ffd700">
-    <polygon points="120,140 122,146 128,146 123,150 125,156 120,152 115,156 117,150 112,146 118,146" transform="scale(0.8)"/>
-    <polygon points="480,200 482,206 488,206 483,210 485,216 480,212 475,216 477,210 472,206 478,206" transform="scale(0.7)"/>
+
+  <!-- Magical Sparkles (Gold) -->
+  <g fill="#ffd700" filter="url(#goldenGlow)">
+    <circle cx="100" cy="150" r="3" opacity="0.8"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="3s" repeatCount="indefinite"/></circle>
+    <circle cx="420" cy="180" r="4" opacity="0.9"><animate attributeName="opacity" values="0.9;0.3;0.9" dur="4s" repeatCount="indefinite"/></circle>
+    <circle cx="80" cy="300" r="2" opacity="0.6"/>
+    <circle cx="450" cy="280" r="3" opacity="0.7"/>
+    <path d="M 380 120 L 383 128 L 391 131 L 383 134 L 380 142 L 377 134 L 369 131 L 377 128 Z" fill="#fffbe6"/>
+    <path d="M 140 420 L 142 426 L 148 428 L 142 430 L 140 436 L 138 430 L 132 428 L 138 426 Z" fill="#fffbe6" transform="scale(0.8)"/>
   </g>
+
 </svg>
