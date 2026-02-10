@@ -492,7 +492,7 @@ textarea {
 .vocab-word {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--text-main);
+    color: #1a0a00;
     margin-bottom: 0.5rem;
     display: flex;
     justify-content: space-between;
@@ -513,16 +513,16 @@ textarea {
 }
 
 .vocab-def {
-    color: var(--text-light);
+    color: #3d2010;
     font-size: 0.95rem;
     margin-bottom: 0.5rem;
 }
 
 .vocab-example {
     font-style: italic;
-    color: #4a5568;
+    color: #2d1810;
     font-size: 0.9rem;
-    background: #f7fafc;
+    background: rgba(139, 90, 43, 0.1);
     padding: 0.5rem;
     border-radius: 6px;
 }
