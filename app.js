@@ -78,6 +78,16 @@ const CEFR_DESCRIPTIONS = {
 - Subtle shades of meaning, irony, and rhetorical devices
 - Story length: approx 200+ words
 - Complex text: approx 150 words, academic or journalistic style`
+    },
+    'C2': {
+        name: 'Mastery (精通级)',
+        guidelines: `
+- Near-native proficiency, full command of sophisticated vocabulary
+- Effortless use of complex grammatical structures, nuanced expressions
+- Literary devices, abstract reasoning, and cultural references
+- Ability to appreciate subtle differences in meaning and register
+- Story length: approx 250+ words
+- Complex text: approx 200 words, publishable quality, elegant prose`
     }
 };
 
@@ -87,6 +97,7 @@ async function generateStory() {
     const theme = document.getElementById('themeSelect').options[document.getElementById('themeSelect').selectedIndex].text;
     const difficulty = document.getElementById('difficultySelect').value;
     const difficultyInfo = CEFR_DESCRIPTIONS[difficulty];
+    const lengthOption = document.getElementById('lengthSelect').value;
     const apiKey = document.getElementById('apiKey').value;
     const modelId = document.getElementById('modelId').value;
     const btn = document.getElementById('generateBtn');
@@ -101,20 +112,26 @@ async function generateStory() {
     btn.disabled = true;
 
     // Prompt Construction with CEFR level
+    // 文章长度配置
+    const lengthConfig = lengthOption === 'long'
+        ? { simple: '250-350', complex: '200-300', label: 'LONG' }
+        : { simple: '100-150', complex: '80-120', label: 'SHORT' };
+
     const systemPrompt = `You are an expert English teacher specializing in CEFR-aligned content creation.
     The learner's current level is: **${difficulty} - ${difficultyInfo.name}**.
+    Article length preference: **${lengthConfig.label}**
     
     IMPORTANT LANGUAGE GUIDELINES for ${difficulty}:
     ${difficultyInfo.guidelines}
 
     Your task is to take a list of words and a theme, then generate the following in JSON format:
-    1. 'simple_text': An engaging short story using ALL the input words naturally. The story MUST follow the theme: "${theme}". Strictly adhere to the ${difficulty} language guidelines above.
+    1. 'simple_text': An engaging short story using ALL the input words naturally. The story MUST follow the theme: "${theme}". Strictly adhere to the ${difficulty} language guidelines above. The story should be approximately ${lengthConfig.simple} words.
     2. 'simple_text_cn': The Chinese translation of 'simple_text'. Should be natural and fluent Chinese.
     3. 'simple_quiz': An array of exactly 3 multiple-choice questions about the simple_text story. Each question object must have:
        - 'question': The question in English (suitable for ${difficulty} level).
        - 'options': An array of exactly 4 options (A, B, C, D).
        - 'correct_answer': The correct option letter (A, B, C, or D).
-    4. 'complex_text': A slightly more formal text (news snippet, diary entry, or informational paragraph) using the words. Still respects the ${difficulty} level but feels more "real-world".
+    4. 'complex_text': A slightly more formal text (news snippet, diary entry, or informational paragraph) using the words. Still respects the ${difficulty} level but feels more "real-world". Approximately ${lengthConfig.complex} words.
     5. 'complex_text_cn': The Chinese translation of 'complex_text'.
     6. 'complex_quiz': An array of exactly 3 multiple-choice questions about the complex_text. Same format as simple_quiz.
     7. 'vocabulary_data': An array of objects for each input word. Each object must have:
